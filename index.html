@@ -55,14 +55,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
           crossorigin=""/>
-    <link rel="stylesheet" href="slideshow.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-search@2.3.7/dist/leaflet-search.src.css" />
 
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
             integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
             crossorigin=""></script>
     <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
-    <script src="leaflet-search.js"></script>
     <link rel="stylesheet" href="dist/MarkerCluster.css" />
     <link rel="stylesheet" href="dist/MarkerCluster.Default.css" />
     <script src="dist/leaflet.markercluster-src.js"></script>
@@ -146,20 +144,24 @@ function onEachFeature(feature, layer) {
 
 
         // layer.bindPopup(popupContent);
-        marker.bindPopup(popupContent).on('click', clickZoom);
-        // marker.bindPopup(popupContent, {
-        //     maxWidth: window.innerWidth/2,
-        //     maxHeight: window.innerHeight/2
-        //
-        // }).on('click', clickZoom);
+        // marker.bindPopup(popupContent).on('click', clickZoom).on('click', clickZoom);
+        marker.bindPopup(popupContent, {
+            maxWidth: window.innerWidth/1.5,
+            maxHeight: window.innerHeight/1.5
+        });
         markers.addLayer(marker);
         function clickZoom(e) {
             map.setView(e.target.getLatLng());
         }
+
     }
 };
 map.addLayer(markers);
-
+map.on('popupopen', function(e) {
+    var px = map.project(e.target._popup._latlng); // find the pixel location on the map where the popup anchor is
+    px.y -= e.target._popup._container.clientHeight/2; // find the height of the popup container, divide by 2, subtract from the Y axis of marker location
+    map.panTo(map.unproject(px),{animate: true}); // pan to new center
+});
 
 
 $('#map').on('click', '.popup .cycle a', function() {
@@ -183,15 +185,15 @@ $('#map').on('click', '.popup .cycle a', function() {
     return false;
 });
 
-L.control.search({
-    layer: L.layerGroup ([sitis]),
-    initial: false,
-    propertyName: 'myKey', // Specify which property is searched into.
-    zoom: 14,
-    placeholder: "Search order",
-    position: 'topleft'
-})
-    .addTo(map);
+// L.control.search({
+//     layer: L.layerGroup ([sitis]),
+//     initial: false,
+//     propertyName: 'myKey', // Specify which property is searched into.
+//     zoom: 14,
+//     placeholder: "Search order",
+//     position: 'topleft'
+// })
+//     .addTo(map);
 
 
 
