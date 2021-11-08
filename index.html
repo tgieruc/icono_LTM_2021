@@ -146,11 +146,12 @@ function onEachFeature(feature, layer) {
 
 
         // layer.bindPopup(popupContent);
-        marker.bindPopup(popupContent, {
-            maxWidth: window.innerWidth/2,
-            maxHeight: window.innerHeight/2
-
-        }).on('click', clickZoom);
+        marker.bindPopup(popupContent).on('click', clickZoom);
+        // marker.bindPopup(popupContent, {
+        //     maxWidth: window.innerWidth/2,
+        //     maxHeight: window.innerHeight/2
+        //
+        // }).on('click', clickZoom);
         markers.addLayer(marker);
         function clickZoom(e) {
             map.setView(e.target.getLatLng());
