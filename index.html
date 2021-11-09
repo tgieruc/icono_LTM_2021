@@ -107,11 +107,17 @@ function onEachFeature(feature, layer) {
 
         for(var i = 0; i < images.length; i++) {
             var img = images[i];
+            if (img[1] == "None"){
+                slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
+                    '<img src="' + img[0] + '" />' +
+                    '</div>';
+            } else{
+                slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
+                    '<img src="' + img[0] + '" />' +
+                    '<div class="caption">' + img[1] + '</div>' +
+                    '</div>';
+            }
 
-            slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
-                '<img src="' + img[0] + '" />' +
-                '<div class="caption">' + img[1] + '</div>' +
-                '</div>';
         }
 
         if (images.length > 1) {
