@@ -13,7 +13,6 @@
 
 
 
-
     <style id="compiled-css" type="text/css">
         html, body {margin:0;padding:0;height:100%;}
 
@@ -42,6 +41,109 @@
         /* EOS */
 
 
+
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{
+            background:#333;
+        }
+        .page{
+            font-family:sans-serif;
+            max-width:480px;
+            margin:0 auto;
+            background:#cccccc;
+            color:#735c5c;
+            line-height:1.5;
+            position:relative;
+        }
+
+        .header{
+            padding:0 12px;
+            position:fixed;
+            z-index:999;
+            width:100%;
+            /*max-width:480px;*/
+            background: #cccccc;
+            box-sizing:border-box;
+            border-bottom:1px solid #735c5c;
+        }
+
+        .header-title{
+            line-height:50px;
+            font-size:22px;
+        }
+        ul,li{
+            display:block;
+        }
+        li{
+            height:50px;
+            line-height:50px;
+            padding:0 12px;
+            border-bottom:1px solid #777;
+            background:#cccccc;
+        }
+
+        #menu-button{
+            position:absolute;
+            top:0;
+            right:0;
+            width:50px;
+            height:50px;
+            overflow:hidden;
+            background:#cccccc;
+            color: #735c5c;
+            line-height:50px;
+            text-align:center;
+            font-size:40px;
+            cursor:pointer;
+            transition:all .5s;
+        }
+
+
+        #menu-button::after{
+            content:'×';
+        }
+        #menu-button.close{
+            color:#735c5c;
+            background:#cccccc;
+        }
+        #menu-button.close::after{
+            content:'≡';
+        }
+
+        #menu{
+            z-index:900;
+
+            transition:transform .5s;
+            position:absolute;
+            width:100%;
+            /*max-width:480px;*/
+            transform:translateY(-300px);
+
+        }
+        #menu.show-menu{
+            transform:translateY(51px);
+        }
+
+        .main{
+            padding:62px 12px 12px 12px;
+        }
+
+        .slider{
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+        .container {
+            height: 200px;
+            position: relative;
+            border: 3px solid green;
+        }
+
     </style>
 
     <script id="insert"></script>
@@ -65,19 +167,42 @@
     <link rel="stylesheet" href="dist/MarkerCluster.Default.css" />
     <script src="dist/leaflet.markercluster-src.js"></script>
     <script src="data.js"></script>
+    <link href="node_modules/nouislider/dist/nouislider.css" rel="stylesheet">
+    <script src="node_modules/nouislider/dist/nouislider.js"></script>
 
 </head>
 <body>
+<header class="header"><h1 class="header-title">Lausanne Time Machine - Iconographie</h1><div id="menu-button" class="close"></div></header>
+<nav id="menu" class="">
+    <ul>
+        <li>
+
+
+        <li> <div class="slider" id="slider"></div>
+    </ul>
+</nav>
 <div id="map"></div>
 </body>
 </html>
 
 <script type="text/javascript">//<![CDATA[
 
+var min_year = 1856
+var max_year = 2012
+var slider = document.getElementById('slider');
 
-
+noUiSlider.create(slider, {
+    start: [1856, 2012],
+    connect: true,
+    range: {
+        'min': 1856,
+        'max': 2012
+    }
+});
 
 var map = L.map('map').setView([46.522935, 6.6322734], 13);
+
+map.zoomControl.setPosition('bottomright');
 
 L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -98,69 +223,68 @@ var sitis =  L.geoJson(geoJson, {
 //L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="openstreetmap.org/copyright">OpenStreetMap</a>', subdomains: ['a','b','c'] }).addTo( map )
 
 function onEachFeature(feature, layer) {
-// does this feature have a property named popupContent?
+// does this feature have a property named popupContent
     if (feature.properties && feature.properties.Title) {
-        var marker = L.marker(new L.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), { title: feature.properties.Title });
+            var marker = L.marker(new L.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), { title: feature.properties.Title });
 
-        var images = feature.properties.images
-        var slideshowContent = '';
+            var images = feature.properties.images
+            var slideshowContent = '';
 
-        for(var i = 0; i < images.length; i++) {
-            var img = images[i];
-            if (img[1] == "None"){
-                slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
-                    '<img src="' + img[0] + '" />' +
-                    '</div>';
-            } else{
-                slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
-                    '<img src="' + img[0] + '" />' +
-                    '<div class="caption">' + img[1] + '</div>' +
+            for(var i = 0; i < images.length; i++) {
+                var img = images[i];
+                if (img[1] == "None"){
+                    slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
+                        '<img src="' + img[0] + '" />' +
+                        '</div>';
+                } else{
+                    slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
+                        '<img src="' + img[0] + '" />' +
+                        '<div class="caption">' + img[1] + '</div>' +
+                        '</div>';
+                }
+
+            }
+
+            if (images.length > 1) {
+                var popupContent =  '<div id="' + feature.properties.Title + '" class="popup">' +
+                    "<h1><font color='red'>"+feature.properties.Title+"</font></h1>"+
+                    // <h2>Address: " +feature.properties.Head+
+                    // "</h2><p>"+feature.properties.Description+"</p><p> Website:"
+                    // +feature.properties.URL+
+
+                    '<div class="slideshow">' +
+                    slideshowContent +
+                    '</div>' +
+                    '<div class="cycle">' +
+                    '<a href="#" class="prev">&laquo; Previous</a>' +
+                    '<a href="#" class="next">Next &raquo;</a>' +
+                    '</div>'
+                '</div>';
+            } else {
+                var popupContent =  '<div id="' + feature.properties.Title + '" class="popup">' +
+                    "<h1><font color='red'>"+feature.properties.Title+"</font></h1>"+
+                    // <h2>Address: " +feature.properties.Head+
+                    // "</h2><p>"+feature.properties.Description+"</p><p> Website:"
+                    // +feature.properties.URL+
+
+                    '<div class="slideshow">' +
+                    slideshowContent +
+
                     '</div>';
             }
 
+
+            // layer.bindPopup(popupContent);
+            // marker.bindPopup(popupContent).on('click', clickZoom).on('click', clickZoom);
+            marker.bindPopup(popupContent, {
+                maxWidth: window.innerWidth/1.5,
+                maxHeight: window.innerHeight/1.5
+            });
+            markers.addLayer(marker);
+            function clickZoom(e) {
+                map.setView(e.target.getLatLng());
+            }
         }
-
-        if (images.length > 1) {
-            var popupContent =  '<div id="' + feature.properties.Title + '" class="popup">' +
-                "<h1><font color='red'>"+feature.properties.Title+"</font></h1>"+
-                // <h2>Address: " +feature.properties.Head+
-                // "</h2><p>"+feature.properties.Description+"</p><p> Website:"
-                // +feature.properties.URL+
-
-                '<div class="slideshow">' +
-                slideshowContent +
-                '</div>' +
-                '<div class="cycle">' +
-                '<a href="#" class="prev">&laquo; Previous</a>' +
-                '<a href="#" class="next">Next &raquo;</a>' +
-                '</div>'
-            '</div>';
-        } else {
-            var popupContent =  '<div id="' + feature.properties.Title + '" class="popup">' +
-                "<h1><font color='red'>"+feature.properties.Title+"</font></h1>"+
-                // <h2>Address: " +feature.properties.Head+
-                // "</h2><p>"+feature.properties.Description+"</p><p> Website:"
-                // +feature.properties.URL+
-
-                '<div class="slideshow">' +
-                slideshowContent +
-
-                '</div>';
-        }
-
-
-        // layer.bindPopup(popupContent);
-        // marker.bindPopup(popupContent).on('click', clickZoom).on('click', clickZoom);
-        marker.bindPopup(popupContent, {
-            maxWidth: window.innerWidth/1.5,
-            maxHeight: window.innerHeight/1.5
-        });
-        markers.addLayer(marker);
-        function clickZoom(e) {
-            map.setView(e.target.getLatLng());
-        }
-
-    }
 };
 map.addLayer(markers);
 map.on('popupopen', function(e) {
@@ -191,6 +315,7 @@ $('#map').on('click', '.popup .cycle a', function() {
     return false;
 });
 
+
 // L.control.search({
 //     layer: L.layerGroup ([sitis]),
 //     initial: false,
@@ -200,6 +325,15 @@ $('#map').on('click', '.popup .cycle a', function() {
 //     position: 'topleft'
 // })
 //     .addTo(map);
+
+var menuButton = document.querySelector('#menu-button');
+var menu = document.querySelector('#menu');
+
+// show or hide
+menuButton.addEventListener('click',function(){
+    menu.classList.toggle('show-menu');
+    menuButton.classList.toggle('close');
+});
 
 
 
