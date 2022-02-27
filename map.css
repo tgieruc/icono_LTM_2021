@@ -1,0 +1,31 @@
+html, body {margin:0;padding:0;height:100%;width:100%}
+
+#map { width: 100%; height:90%;
+}
+
+
+.popup {
+    text-align:center;
+
+}
+.popup .slideshow .image        { display:none; }
+.popup .slideshow .image.active { display:block; }
+
+.popup .slideshow .caption {
+    background:#eee;
+    padding:10px;
+}
+.popup .cycle {
+    padding:10px 0 20px;
+}
+.popup .cycle a.prev { float:left; }
+.popup .cycle a.next { float:right; }
+
+.block {width: 100%; height:100%;overflow: hidden; }
+.block .top { /* style stuff */ }
+.block .bottom { float: left; width: 100%; }
+
+
+#slider-fit {
+    padding: 0 16px;
+}
