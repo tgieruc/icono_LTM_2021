@@ -1,9 +1,16 @@
 //<![CDATA[
 var map = L.map('map').setView([46.522935, 6.6322734], 13);
+map.zoomControl.setPosition('bottomright');
+L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    subdomains: ['a','b','c']
+}).addTo( map );
+
 
 let maxYear = 1870
 let minYear = 1830
 
+// Year Range Slider -----------
 window.onload = function() {
     let slider = document.getElementById("slider");
     noUiSlider.create(slider, {
@@ -26,29 +33,18 @@ window.onload = function() {
         max_element.innerHTML = parseInt(slider_values[1]);
         markers.clearLayers();
         sitis =  L.geoJson(geoJson, {
-                // pointToLayer: function (feature, latlng) {
-                //     feature.properties.myKey = feature.properties.Title + ', ' + feature.properties.Head
-                //     return L.circleMarker(latlng, geojsonMarkerOptions);
-                // },
                 onEachFeature: onEachFeature
             }
         )
         map.addLayer(markers);
-
         map.invalidateSize()
     });
-
 }
+// Year Range Slider END-----------
 
-map.zoomControl.setPosition('bottomright');
 
-L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: ['a','b','c']
-}).addTo( map );
 
 var markers = L.markerClusterGroup();
-
 var sitis =  L.geoJson(geoJson, {
         // pointToLayer: function (feature, latlng) {
         //     feature.properties.myKey = feature.properties.Title + ', ' + feature.properties.Head
@@ -58,16 +54,14 @@ var sitis =  L.geoJson(geoJson, {
     }
 )
 
-
-
 function onEachFeature(feature, layer) {
-// does this feature have a property named popupContent
     if (feature.properties && feature.properties.Title) {
         var marker = L.marker(new L.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), { title: feature.properties.Title });
 
         var images = feature.properties.images
         var year = parseInt(feature.properties.Title)
         var slideshowContent = '';
+        // if in selected range of year
         if (year > minYear && year < maxYear){
             for(var i = 0; i < images.length; i++) {
                 var img = images[i];
@@ -83,14 +77,10 @@ function onEachFeature(feature, layer) {
                 }
 
             }
-
+            //slideshow if >1 picture
             if (images.length > 1) {
                 var popupContent =  '<div id="' + feature.properties.Title + '" class="popup">' +
                     "<h1><font color='red'>"+feature.properties.Title+"</font></h1>"+
-                    // <h2>Address: " +feature.properties.Head+
-                    // "</h2><p>"+feature.properties.Description+"</p><p> Website:"
-                    // +feature.properties.URL+
-
                     '<div class="slideshow">' +
                     slideshowContent +
                     '</div>' +
@@ -102,16 +92,12 @@ function onEachFeature(feature, layer) {
             } else {
                 var popupContent =  '<div id="' + feature.properties.Title + '" class="popup">' +
                     "<h1><font color='red'>"+feature.properties.Title+"</font></h1>"+
-                    // <h2>Address: " +feature.properties.Head+
-                    // "</h2><p>"+feature.properties.Description+"</p><p> Website:"
-                    // +feature.properties.URL+
-
                     '<div class="slideshow">' +
                     slideshowContent +
                     '</div>';
             }
 
-
+            //centering on marker when clicked on
             marker.on('click', function(e) {
                 let px =marker.getLatLng(); // find the pixel location on the map where the popup anchor is
                 map.panTo(px,{animate: true}); // pan to new center
@@ -119,16 +105,13 @@ function onEachFeature(feature, layer) {
             });
 
             markers.addLayer(marker);
-            function clickZoom(e) {
-                map.setView(e.target.getLatLng());
-            }
         }
 
     }
 }
 map.addLayer(markers);
 
-
+// Slideshow mechanics
 $('#pichard').on('click', '.popup .cycle a', function() {
     var $slideshow = $('.slideshow'),
         $newSlide;
@@ -160,11 +143,6 @@ menuButton.addEventListener('click',function(){
     menu.classList.toggle('show-menu');
     menuButton.classList.toggle('close');
 });
-
-
-
-
-
 
 
 
