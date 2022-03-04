@@ -31,15 +31,17 @@ window.onload = function() {
         maxYear = parseInt(slider_values[1]);
         min_element.innerHTML = parseInt(slider_values[0]);
         max_element.innerHTML = parseInt(slider_values[1]);
-        markers.clearLayers();
-        sitis =  L.geoJson(geoJson, {
-                onEachFeature: onEachFeature
-            }
-        )
-        map.addLayer(markers);
-        map.invalidateSize()
     });
 }
+
+function update_map() {
+    markers.clearLayers();
+    sitis =  L.geoJson(geoJson, {
+            onEachFeature: onEachFeature
+        }
+    )
+    map.addLayer(markers);
+    map.invalidateSize()}
 // Year Range Slider END-----------
 
 
