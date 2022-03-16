@@ -1,0 +1,6 @@
+UPDATE icono_MHL_all_latlong_year
+SET
+    Latitude = 46.519517035844274,
+    Longitude = 6.630883769404221
+WHERE
+    ID is 161045
