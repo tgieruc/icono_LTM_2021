@@ -5,7 +5,7 @@ from geojson import Feature, Point, FeatureCollection, dump
 import random
 import re
 
-filename = "data.geojson"
+filename = "data2.geojson"
 
 ran = 0 # 0.0001
 
@@ -23,16 +23,17 @@ latitude_prev = df.Latitude[0]
 actual_collection = 0
 year_prev = df.Year[0]
 des = df.Description[0].replace("'", "\\'")
-description = f'[\'{df.ImageUrl[0]}\', \'{des}\'],'
+description = f'[\'{df.ImageUrl[0]}\', \'{df.ID[0]}\', \'{des}\'],'
 for index, row in df[1:].iterrows():
+    print(index)
     if row["Year"] == year_prev:
         if row["Latitude"] == latitude_prev:
             des = str(row["Description"]).replace("'", "\\'")
-            description += f'[\'{row["ImageUrl"]}\', \'{des}\'],'
+            description += f'[\'{row["ImageUrl"]}\', \'{row["ID"]}\', \'{des}\'],'
         else:
             features.append(Feature(geometry=Point((longitude_prev + random.uniform(-ran, ran), latitude_prev+random.uniform(-0.0001, 0.0001))), properties={'images': f'[ {description}] ', 'Title':row["Year"]}))
             des = str(row["Description"]).replace("'", "\\'")
-            description = f'[\'{row["ImageUrl"]}\', \'{des}\'],'
+            description = f'[\'{row["ImageUrl"]}\' , \'{row["ID"]}\', \'{des}\'],'
             latitude_prev = row["Latitude"]
             longitude_prev = row["Longitude"]
     else:
@@ -40,7 +41,7 @@ for index, row in df[1:].iterrows():
             (longitude_prev + random.uniform(-ran, ran), latitude_prev + random.uniform(-ran, ran))),
                                 properties={f'\'images\'': f'[ {description}] ', "Title": year_prev}))
         des = str(row["Description"]).replace("'", "\\'")
-        description = f'[\'{row["ImageUrl"]}\', \'{des}\'],'
+        description = f'[\'{row["ImageUrl"]}\',\'{row["ID"]}\', \'{des}\'],'
         latitude_prev = row["Latitude"]
         longitude_prev = row["Longitude"]
         year_prev = row["Year"]
