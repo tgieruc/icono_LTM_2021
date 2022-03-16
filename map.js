@@ -51,8 +51,8 @@ window.onload = function() {
         // tooltip: true,
         step: 1,
         range: {
-            min: 1800,
-            max: 2020
+            min: 1808,
+            max: 2009
         }
     });
     min_element = document.getElementById("min");
@@ -101,17 +101,18 @@ function onEachFeature(feature, layer) {
         var year = parseInt(feature.properties.Title)
         var slideshowContent = '';
         // if in selected range of year
-        if (year > minYear && year < maxYear){
+        if (year >= minYear && year <= maxYear){
             for(var i = 0; i < images.length; i++) {
                 var img = images[i];
-                if (img[1] == "None"){
+                if (img[2] == "None"){
                     slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
                         '<img src="' + img[0] + '" />' +
+                        '<div class="caption"> ID = ' + img[1] + '</div>' +
                         '</div>';
                 } else{
                     slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
                         '<img src="' + img[0] + '" />' +
-                        '<div class="caption">' + img[1] + '</div>' +
+                        '<div class="caption"> ID = ' + img[1] +'<br>' + img[2]+'</div>' +
                         '</div>';
                 }
 
