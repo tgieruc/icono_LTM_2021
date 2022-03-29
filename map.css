@@ -1,12 +1,11 @@
 html, body {margin:0;padding:0;height:100%;width:100%}
 
-#map { width: 100%; height:90%;
+#map { width: 100%; height:70vh;
 }
 
 
 .popup {
     text-align:center;
-
 }
 .popup .slideshow .image        { display:none; }
 .popup .slideshow .image.active { display:block; }
@@ -21,11 +20,39 @@ html, body {margin:0;padding:0;height:100%;width:100%}
 .popup .cycle a.prev { float:left; }
 .popup .cycle a.next { float:right; }
 
+.galleryyear        { display:none; }
+.galleryyear .active { display:block; }
+
+
 .block {width: 100%; height:100%;overflow: hidden; }
 .block .top { /* style stuff */ }
 .block .bottom { float: left; width: 100%; }
 
+#pichardGenerative{
+    width:40vw;
+    padding: 10px;
+    white-space: nowrap;
 
+}
+
+#scrolllist{
+    overflow: scroll;
+    width: 70px;
+    height: 50vh;
+    display: inline-block;
+    vertical-align: baseline;
+
+}
+#gallery{
+    display: inline-block;
+    width: 100%;
+    vertical-align: baseline;
+}
+
+#gallery .caption{
+    white-space: normal;
+
+}
 #slider {
     height: 10px;
 }

@@ -64,125 +64,111 @@ window.onload = function() {
         min_element.innerHTML = parseInt(slider_values[0]);
         max_element.innerHTML = parseInt(slider_values[1]);
     });
+    $('#pichardGenerative').on('click', 'a.year', function() {
+        var $gallery = $("#gallery")
+
+        $gallery.find('.active').removeClass('active').hide();
+        $gallery.find('.first').addClass('active').show()
+        $gallery.find('#'+$(this).html()).addClass('active').show()
+        return false;
+    });
+
+    $('#pichardGenerative').on('click', '.popup .cycle a', function() {
+        var $slideshow = $('.slideshow'),
+            $newSlide;
+
+        if ($(this).hasClass('prev')) {
+            $newSlide = $slideshow.find('.active').prev();
+            if ($newSlide.index() < 0) {
+                $newSlide = $('.image').last();
+            }
+        } else {
+            $newSlide = $slideshow.find('.active').next();
+            if ($newSlide.index() < 0) {
+                $newSlide = $('.image').first();
+            }
+        }
+
+        $slideshow.find('.active').removeClass('active').hide();
+        $newSlide.addClass('active').show();
+        return false;
+    });
+
 }
 
 
 function update_map() {
     markers.clearLayers();
-    sitis =  L.geoJson(geoJson, {
-            onEachFeature: onEachFeature
-        }
-    )
-    map.addLayer(markers);
-
+    json.forEach(createMarker)
+    map.addLayer(markers)
     map.invalidateSize()
 }
 
 
 // Year Range Slider END-----------
 
-
-
 var markers = L.markerClusterGroup();
-var sitis =  L.geoJson(geoJson, {
-        // pointToLayer: function (feature, latlng) {
-        //     feature.properties.myKey = feature.properties.Title + ', ' + feature.properties.Head
-        //     return L.circleMarker(latlng, geojsonMarkerOptions);
-        // },
-        onEachFeature: onEachFeature
-    }
-)
+json.forEach(createMarker)
+map.addLayer(markers);
 
-function onEachFeature(feature, layer) {
-    if (feature.properties && feature.properties.Title) {
-        var marker = L.marker(new L.LatLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), { title: feature.properties.Title });
 
-        var images = feature.properties.images
-        var year = parseInt(feature.properties.Title)
-        var slideshowContent = '';
-        // if in selected range of year
-        if (year >= minYear && year <= maxYear){
-            for(var i = 0; i < images.length; i++) {
-                var img = images[i];
-                if (img[2] == "None"){
-                    slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
-                        '<img src="' + img[0] + '" />' +
-                        '<div class="caption"> ID = ' + img[1] + '</div>' +
-                        '</div>';
-                } else{
-                    slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '">' +
-                        '<img src="' + img[0] + '" />' +
-                        '<div class="caption"> ID = ' + img[1] +'<br>' + img[2]+'</div>' +
-                        '</div>';
-                }
+
+function createMarker(value) {
+    var marker = L.marker(new L.LatLng(value.latitude, value.longitude), { title: value.title});
+    var popupContent_array = '';
+    var scroll_list = '';
+    for (var j = 0; j < value.years.length; j++) {
+        year_elem = value.years[j]
+        if (year_elem.year >= minYear && year_elem.year <= maxYear) {
+            popupContent_array += '<div id="' + year_elem.year + '" class="galleryyear' + (j === 0 ? ' active' : '') + ' ">'
+            scroll_list += '<div><a href=#pichard  class="year">' + year_elem.year + '</a></div>'
+            var slideshowContent = '';
+            var popupContent = '';
+            for (var i = 0; i < year_elem.images.length; i++) {
+                img = year_elem.images[i]
+                slideshowContent += '<div class="image' + (i === 0 ? ' active first' : '') + '">' +
+                    '<img src="' + img.url + '" />' +
+                    '<div class="caption"> ID = ' + img.id + '<br>' + img.description + '</div>' +
+                    '</div>';
 
             }
-            //slideshow if >1 picture
-            if (images.length > 1) {
-                var popupContent =  '<div id="' + feature.properties.Title + '" class="popup">' +
-                    "<h1><font color='red'>"+feature.properties.Title+"</font></h1>"+
+            if (year_elem.images.length > 1) {
+                popupContent = '<div class="popup">' +
+                    "<h1><font color='red'>" + year_elem.year + "</font></h1>" +
                     '<div class="slideshow">' +
                     slideshowContent +
                     '</div>' +
                     '<div class="cycle">' +
                     '<a href="#pichard" class="prev">&laquo; Previous</a>' +
                     '<a href="#pichard" class="next">Next &raquo;</a>' +
-                    '</div>'
-                '</div>';
+                    '</div></div>';
             } else {
-                var popupContent =  '<div id="' + feature.properties.Title + '" class="popup">' +
-                    "<h1><font color='red'>"+feature.properties.Title+"</font></h1>"+
+                popupContent = '<div class="popup">' +
+                    "<h1><font color='red'>" + year_elem.year + "</font></h1>" +
                     '<div class="slideshow">' +
                     slideshowContent +
-                    '</div>';
+                    '</div></div>';
             }
-
-            //centering on marker when clicked on
-            marker.on('click', function(e) {
-                let px =marker.getLatLng(); // find the pixel location on the map where the popup anchor is
-                map.panTo(px,{animate: true}); // pan to new center
-                document.getElementById("slideshow").innerHTML = popupContent;
-            });
-
-            markers.addLayer(marker);
+            popupContent_array += popupContent + '</div>'
         }
-
     }
+
+    if (scroll_list !== '') {
+        marker.on('click', function(e) {
+            let px =marker.getLatLng(); // find the pixel location on the map where the popup anchor is
+            map.panTo(px,{animate: true}); // pan to new center
+            document.getElementById("scrolllist").innerHTML = scroll_list
+            document.getElementById("gallery").innerHTML = popupContent_array
+        });
+        markers.addLayer(marker);
+    }
+
 }
-map.addLayer(markers);
-
-// Slideshow mechanics
-$('#pichard').on('click', '.popup .cycle a', function() {
-    var $slideshow = $('.slideshow'),
-        $newSlide;
-
-    if ($(this).hasClass('prev')) {
-        $newSlide = $slideshow.find('.active').prev();
-        if ($newSlide.index() < 0) {
-            $newSlide = $('.image').last();
-        }
-    } else {
-        $newSlide = $slideshow.find('.active').next();
-        if ($newSlide.index() < 0) {
-            $newSlide = $('.image').first();
-        }
-    }
-
-    $slideshow.find('.active').removeClass('active').hide();
-    $newSlide.addClass('active').show();
-    return false;
-});
 
 
 
-var menuButton = document.querySelector('#menu-button');
-var menu = document.querySelector('#menu');
 
-// show or hide
-menuButton.addEventListener('click',function(){
-    menu.classList.toggle('show-menu');
-    menuButton.classList.toggle('close');
-});
+
 
 
 
