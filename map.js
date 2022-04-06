@@ -211,13 +211,13 @@ function createMarker(value) {
     for (var j = 0; j < value.years.length; j++) {
         year_elem = value.years[j]
         if (year_elem.year >= minYear && year_elem.year <= maxYear) {
-            popupContent_array += '<div id="' + year_elem.year + '" class="galleryyear' + (j === 0 ? ' active' : '') + ' ">'
+            popupContent_array += '<div id="' + year_elem.year + '" class="galleryyear' + (j === 0 ? ' active' : '')+ '"'  + (j === 0 ? ' style="display: block;"' : '')+ ' >'
             scroll_list += '<div><a href=#pichard  class="year">' + year_elem.year + '</a></div>'
             var slideshowContent = '';
             var popupContent = '';
             for (var i = 0; i < year_elem.images.length; i++) {
                 img = year_elem.images[i]
-                    slideshowContent += '<div class="image' + (i === 0 ? ' active first' : '') + '">' +
+                    slideshowContent += '<div class="image' + (i === 0 ? ' active first' : '')    + '">' +
                         '<img src="' + img.url + '" />' +
                         '<div class="caption"> ID = ' + img.id + '<br>' + img.description + '</div>' +
                         '</div>';
