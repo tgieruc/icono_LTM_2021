@@ -3,9 +3,49 @@ from sqlalchemy import create_engine
 import json
 import re
 
+id_to_keep = [97253,
+              98097,
+              98348,
+              99091,
+              99230,
+              98294,
+              98452,
+              112130,
+              112137,
+              112140,
+              112155,
+              143440,
+              112195,
+              112133,
+              113828,
+              112216,
+              117342,
+              99284,
+              119273,
+              146999,
+              98265,
+              98262,
+              98304,
+              112242,
+              111753,
+              111770,
+              123704,
+              99132,
+              118304,
+              111542,
+              111606,
+              98484,
+              113084,
+              113207,
+              117204,
+              135952]
+
 
 def create_img(id, url, description):
-    return {"id": int(id), "url": url, "description": description}
+    Pichard = "False"
+    if id in id_to_keep:
+        Pichard = "True"
+    return {"id": int(id), "url": url, "description": description, "pichard": Pichard}
 
 
 def create_year_elem(year, images):
@@ -21,7 +61,7 @@ filename = "data2.json"
 ran = 0  # 0.0001
 
 engine = create_engine('sqlite:///icono_MHL.db')
-df = pd.read_sql("select * from icono_MHL_all_latlong_year where Latitude is not null order by Latitude, Year asc",
+df = pd.read_sql("select * from icono_MHL_all_latlong_year where Pichard is true order by Latitude, Year asc",
                  engine)
 
 marker_arr = []
@@ -67,12 +107,11 @@ for index, row in df[1:].iterrows():
             url = row["ImageUrl"]
             description = str(row["Description"]).replace("'", "\\'")
             img_arr.append(create_img(id, url, description))
-        else: #SAME COORDINATES, SAME YEAR
+        else:  # SAME COORDINATES, SAME YEAR
             id = row["ID"]
             url = row["ImageUrl"]
             description = str(row["Description"]).replace("'", "\\'")
             img_arr.append(create_img(id, url, description))
-
 
 marker_arr.append(create_marker(longitude, latitude, year_arr, index_marker))
 
