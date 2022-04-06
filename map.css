@@ -54,7 +54,7 @@ html, body {margin:0;padding:0;height:100%;width:100%}
 .galleryyear .active { display:block; }
 
 
-.block {width: 100%; height:100%;overflow: hidden; }
+.block {width: 100%; height:100%;overflow: hidden; padding:0px; }
 .block .top { /* style stuff */ }
 .block .bottom { float: left; width: 100%; }
 
@@ -68,7 +68,7 @@ html, body {margin:0;padding:0;height:100%;width:100%}
 #scrolllist{
     overflow: scroll;
     width: 70px;
-    height: 50vh;
+    height: 75vh;
     display: inline-block;
     vertical-align: top;
 
