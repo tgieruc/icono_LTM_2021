@@ -25,7 +25,7 @@ html, body {margin:0;padding:0;height:100%;width:100%}
     margin-left: -60px;
     background-color:white;
     opacity: 0;
-    transition: opacity 1s;
+    transition: opacity 0.2s;
 }
 
 .imgbulle:hover .bulle {
