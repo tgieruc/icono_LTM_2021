@@ -61,6 +61,7 @@ let minYear = 1830
 
 
 window.onload = function() {
+
     let slider = document.getElementById("slider");
     noUiSlider.create(slider, {
         start: [minYear, maxYear],
@@ -72,6 +73,11 @@ window.onload = function() {
             max: maxYear
         }
     });
+
+
+
+
+
     min_element = document.getElementById("min");
     max_element = document.getElementById("max");
     slider.noUiSlider.on("update", function (values, handle) {
@@ -110,6 +116,9 @@ window.onload = function() {
         $newSlide.addClass('active').show();
         return false;
     });
+
+
+
 
 }
 
@@ -179,6 +188,8 @@ function update_map() {
 
 // Year Range Slider END-----------
 
+
+
 var markers = L.markerClusterGroup();
 json.forEach(createMarker)
 map.addLayer(markers);
@@ -199,7 +210,7 @@ function createMarker(value) {
             for (var i = 0; i < year_elem.images.length; i++) {
                 img = year_elem.images[i]
                     slideshowContent += '<div class="image' + (i === 0 ? ' active first' : '')    + '">' +
-                        '<img src="' + img.url + '" />' +
+                        '<img  class="img_gallery"  src="' + img.url + '" />' +
                         '<div class="caption"> ID = ' + img.id + '<br>' + img.description + '</div>' +
                         '</div>';
             }
@@ -255,7 +266,5 @@ if (window.parent && window.parent.parent){
         slug: "rv28aznx"
     }], "*")
 }
-
 // always overwrite window.name, in case users try to set it manually
 window.name = "result"
-

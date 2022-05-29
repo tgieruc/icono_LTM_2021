@@ -200,7 +200,7 @@ function createMarker(value) {
             for (var i = 0; i < year_elem.images.length; i++) {
                 img = year_elem.images[i]
                     slideshowContent += '<div class="image' + (i === 0 ? ' active first' : '')    + '">' +
-                        '<img src="' + img.url + '" />' +
+                        '<img class="img_gallery" src="' + img.url + '" />' +
                         '<div class="caption"> ID = ' + img.id + '<br>' + img.description + '</div>' +
                         '</div>';
             }
